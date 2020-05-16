@@ -1,0 +1,222 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+/*
+My mother has always hated the line for returning items at clothing stores,
+so I wanted to create a solution. If this was a real app, customers could give
+their name and phone number (or, ideally, text to an SMS short code), then walk
+away from the line, rather than stand and wait. When the customer is next
+in line, they would recei	ve a text notification and arrive by the time the
+current customer is done being serviced. This is essentially a restaurant
+pager system, but for clothing store lines.
+*/
+void addEntry();
+void searchEntry();
+void displayQueue();
+void waitTime();
+void deleteEntry();
+void moveForward();
+void clearQueue();
+
+void addEntry()
+{
+	cout << endl;
+	string name;
+	ofstream writer;
+
+	cout << "Please enter a name and phone number, separated only by a comma: " << endl;
+	cin >> name;
+
+	writer.open("iQueue.txt", ios::app);
+	writer << name << endl;
+	cout << "Entry \"" << name << "\" added." << endl;
+	writer.close();
+}
+
+void searchEntry()
+{
+	cout << endl;
+	string search;
+	ifstream writer;
+	string line;
+
+	cout << "Enter search: " << endl;
+	cin >> search;
+
+	writer.open("iQueue.txt");
+	if (writer.is_open()) {
+		while (getline(writer, line)) {
+			if (line.find(search) == 0) {
+				cout << line << endl;
+			}
+		}
+	}
+	cout << endl;
+	writer.close();
+
+}
+
+void displayQueue()
+{
+	cout << endl;
+	ifstream writer;
+	string line;
+
+	writer.open("iQueue.txt");
+	if (writer.is_open()) {
+		while (getline(writer, line)) {
+			cout << line << endl;
+		}
+	}
+
+	writer.close();
+}
+
+void waitTime()
+{
+	cout << endl;
+	int number_of_lines = 0;
+	int waittime;
+	int hours;
+	int minutes;
+	string line;
+	ifstream myfile("iQueue.txt");
+
+	if (myfile.is_open()) {
+		while (!myfile.eof()) {
+			getline(myfile, line);
+			number_of_lines++;
+		}
+		myfile.close();
+	}
+
+	number_of_lines--;
+	waittime = number_of_lines * 15;
+	hours = waittime / 60;
+	minutes = waittime % 60;
+	cout << "There are " << number_of_lines << " people in line." << endl;
+	
+	if (waittime == 60) {
+		cout << "The approximate wait time is 1 hour." << endl;
+	}
+	if ((minutes == 0) && (hours > 1)) {
+		cout << "The approximate wait time is " << hours << " hours." << endl;
+	}
+	if (waittime < 60) {
+		cout << "The approximate wait time is " << waittime << " minutes." << endl;
+	}
+	else if ((minutes != 0) && (hours > 1)) {
+		cout << "The approximate wait time is " << hours << " and " << minutes << " minutes." << endl;
+	}
+}
+
+void deleteEntry() {
+	cout << endl;
+	ifstream writer;
+	writer.open("iQueue.txt");
+	ofstream temp;
+	temp.open("temp.txt");
+	string deleteline;
+	string line;
+
+	cout << "Enter name and phone number to delete, separated by only a comma." << endl;
+
+	cin >> deleteline;
+
+	while (getline(writer, line))
+	{
+		if (line.substr(0, deleteline.size()) != deleteline)
+		{
+			temp << line << endl;
+		}
+	}
+	cout << "Entry \"" << deleteline << "\" deleted." << endl;
+	temp.close();
+	writer.close();
+	remove("iQueue.txt");
+	rename("temp.txt", "iQueue.txt");
+}
+
+void moveForward() {
+	cout << endl;
+	ifstream writer;
+	writer.open("iQueue.txt");
+	ofstream temp;
+	temp.open("temp.txt");
+	string deleteline;
+	string line;
+	
+	getline(writer, deleteline);
+
+	while (getline(writer, line))
+	{
+		if (line.substr(0, deleteline.size()) != deleteline)
+		{
+			temp << line << endl;
+		}
+	}
+	temp.close();
+	writer.close();
+	remove("iQueue.txt");
+	rename("temp.txt", "iQueue.txt");
+	cout << "Line moved forward." << endl;
+}
+
+void clearQueue() {
+	ifstream writer;
+	writer.open("iQueue.txt");
+	ofstream temp;
+	temp.open("temp.txt");
+
+	temp.close();
+	writer.close();
+	remove("iQueue.txt");
+	rename("temp.txt", "iQueue.txt");
+	cout << "Queue cleared." << endl;
+}
+int main()
+{
+	int choice;
+
+	cout << "Welcome to iQueue!" << endl;
+
+	while (1) {
+		cout << endl;
+		cout << "Press 1 to add entry" << endl;
+		cout << "Press 2 to search for an entry" << endl;
+		cout << "Press 3 to display queue" << endl;
+		cout << "Press 4 to display approximate wait time" << endl;
+		cout << "Press 5 to delete an entry" << endl;
+		cout << "Press 6 to move the line forward" << endl;
+		cout << "Press 7 to clear queue" << endl;
+		cout << "Anything else to quit" << endl;
+		cout << endl;
+		cin >> choice;
+
+		switch (choice)
+		{
+		case 1: addEntry();
+			break;
+		case 2: searchEntry();
+			break;
+		case 3: displayQueue();
+			break;
+		case 4: waitTime();
+			break;
+		case 5: deleteEntry();
+			break;
+		case 6: moveForward();
+			break;
+		case 7: clearQueue();
+			break;
+		default: exit(1);
+		}
+
+	}
+	system("pause");
+
+}
+
+
+
