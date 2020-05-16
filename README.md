@@ -24,3 +24,6 @@ time. Ideally, the user would not have to download the app on their phone and on
 establishment would need it. That way, the user can simply text a short code and
 access all the necessary features. This could also be implemented in the form
 of a website, allowing users to choose between using wifi/data or text.
+
+Since this project is being made around the time of Covid-19, it could even be applied
+to waiting lines for groceries, hospital tests, or many other related uses.
